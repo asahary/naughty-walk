@@ -32,28 +32,29 @@ import {
   GetAllWalkController
 } from "./Infraestructure/Controller/Walk/GetAllWalk/getAllWalkController";
 import { PostWalkController } from "./Infraestructure/Controller/Walk/CreateWalk/postWalkController";
-import { CacheModule, Cache, CacheOptions, CacheStore } from "@nestjs/cache-manager";
+import { Cache, CacheModule, CacheStore } from "@nestjs/cache-manager";
 import { WalkRedisMapper } from "./Infraestructure/Repository/Redis/walkRedisMapper";
-import { redisStore } from "cache-manager-redis-store";
 import { WalkBuilderFromOwnerCreationRequest } from "./Domain/Builder/Walk/walkBuilderFromCreateWalkRequest";
 import { LocationRedisMapper } from "./Infraestructure/Repository/Redis/locationRedisMapper";
 import { GetAllWalkResponsePresenter } from "./Infraestructure/Controller/Walk/GetAllWalk/getAllWalkResponsePresenter";
 import { PostWalkResponsePresenter } from "./Infraestructure/Controller/Walk/CreateWalk/postWalkResponsePresenter";
+import { redisStore } from "cache-manager-redis-store";
 
-function databaseInitialization(...args: any[]): DynamicModule[] {
+
+function databaseInitialization(...args: any[]){
   return [
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => ({
-        type: 'postgres',//type: 'postgres',
-        host: 'localhost',//host: configService.get('DATABASE_HOST'),
-        port: 5432,//port: +configService.get<number>('DATABASE_PORT'),
-        username: 'development',//username: configService.get('DATABASE_USERNAME'),
-        password: 'development',//password: configService.get('DATABASE_PASSWORD'),
-        database: 'naughty_walk',//database: configService.get('DATABASE_NAME'),
-        schema: 'naughty_walk_db',//schema: configService.get('DATABASE_SCHEMA'),
-        synchronize: false,//synchronize: false,
-        autoLoadEntities: true//autoLoadEntities: true
+        type: process.env.TYPEORM_DRIVER as unknown as any,
+        host:  process.env.TYPEORM_HOST,
+        port: process.env.TYPEORM_PORT as unknown as number,
+        username:  process.env.TYPEORM_USERNAME,
+        password:  process.env.TYPEORM_PASSWORD,
+        database:  process.env.TYPEORM_NAME,
+        schema:  process.env.TYPEORM_SCHEMA,
+        synchronize: !!process.env.TYPEORM_SYNCHRONIZE,
+        autoLoadEntities: !!process.env.TYPEORM_AUTOLOAD
       }),
       inject: [ConfigService],
     }),
@@ -63,24 +64,33 @@ function databaseInitialization(...args: any[]): DynamicModule[] {
     ])
   ];
 }
+function initializeRedis() {
+  return CacheModule.registerAsync({
+    useFactory: async () => {
+      const store = await redisStore({
+        socket: {
+          host: process.env.REDIS_HOST,
+          port: +process.env.REDIS_PORT,
+        },
+      });
+
+      return {
+        store: store as unknown as CacheStore,
+        ttl: +process.env.REDIS_TTL,
+      };
+    },
+  });
+}
+
 @Module({
   imports: [
+    ConfigModule.forRoot(
+      {
+        envFilePath: 'development.env',
+        isGlobal: true}
+    ),
     ...databaseInitialization(),
-    CacheModule.registerAsync({
-      useFactory: async () => {
-        const store = await redisStore({
-          socket: {
-            host: 'localhost',
-            port: 6379,
-          },
-        });
-
-        return {
-          store: store as unknown as CacheStore,
-          ttl: 3 * 60000, // 3 minutes (milliseconds)
-        };
-      },
-    }),
+    initializeRedis(),
   ],
   controllers: [CreateOwnerController, CreatePetController, HealthController, GetAllWalkController, PostWalkController],
   providers: [
@@ -124,8 +134,6 @@ function databaseInitialization(...args: any[]): DynamicModule[] {
     PostWalkResponsePresenter,
     GetAllWalkResponsePresenter
   ],
-  exports: [
-    'RedisCache'
-  ]
+  exports: []
 })
 export class AppModule {}
