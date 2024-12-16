@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      TYPEORM_DRIVER: 'postgres'
+      TYPEORM_HOST: 'db'
+      TYPEORM_PORT: 5432
+      TYPEORM_USERNAME: 'development'
+      TYPEORM_PASSWORD: 'development'
+      TYPEORM_NAME: 'naughty_walk'
+      TYPEORM_SCHEMA: 'naughty_walk_db'
+      TYPEORM_SYNCHRONIZE: 'false'
+      TYPEORM_AUTOLOAD: 'true'
+      REDIS_HOST: 'redis'
+      REDIS_PORT: 6379
+      REDIS_TTL: 180000
+    depends_on:
+      - db
+      - redis
+
+  db:
+    container_name: dev-naughty-walk-postgre-sql
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./development/pgdata:/var/lib/postgresql/data/pgdata
+      - ./development/sql/create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+    environment:
+      POSTGRES_PASSWORD: development
+      POSTGRES_USER: development
+      POSTGRES_DB: naughty_walk
+      PGDATA: /var/lib/postgresql/data/pgdata
+
+  redis:
+    container_name: dev-naughty-walk-redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
+  sql:
