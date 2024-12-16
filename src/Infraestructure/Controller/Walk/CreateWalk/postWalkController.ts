@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Headers, HttpStatus, Inject, Post, Res } from "@nestjs/common";
 import { Response } from "express";
 import { PostWalkResponsePresenter } from "./postWalkResponsePresenter";
-import { CreateWalkRequest } from "../../../../Domain/ClientPayloads/Walk/CreateWalk/createWalkRequest";
+import { CreateWalkWalksRequest } from "../../../../Domain/ClientPayloads/Walk/CreateWalk/createWalkWalksRequest";
 import { WalkPublisher } from "../../../../Application/publishWalk/walkPublisher";
 
 @Controller('/publishWalk')
@@ -16,7 +16,7 @@ export class PostWalkController {
   @Post()
   async execute(
     @Headers() headers: Record<string, string>,
-    @Body() body: CreateWalkRequest,
+    @Body() body: CreateWalkWalksRequest,
     @Res() response: Response,
   ) {
 
@@ -25,11 +25,11 @@ export class PostWalkController {
 
 
       const result = await this.walkPublisher.execute(body);
-      const presented = this.postWalkResponsePresenter.execute(true, undefined,result.id);
+      const presented = this.postWalkResponsePresenter.present(true, undefined,result.id);
 
       return response.status(HttpStatus.OK).send(presented);
     }catch (e){
-      const presented = this.postWalkResponsePresenter.execute(true, undefined, e);
+      const presented = this.postWalkResponsePresenter.present(true, undefined, e);
 
       return response.status(HttpStatus.BAD_REQUEST).send(presented);
     }

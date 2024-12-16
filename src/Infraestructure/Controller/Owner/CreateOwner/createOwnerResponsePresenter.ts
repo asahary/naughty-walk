@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Presenter } from "../../presenter";
-import { DefaultResponse } from "../../../../Domain/ClientPayloads/defaultResponse";
+import { CreateOwnerDataResponse } from "../../../../Domain/ClientPayloads/Owner/CreateOwner/createOwnerDataResponse";
+import { BaseResponse } from "../../../../Domain/ClientPayloads/baseResponse";
 
 @Injectable()
-export class CreateOwnerResponsePresenter implements Presenter<{ owner_id: string }> {
-  public execute(
+export class CreateOwnerResponsePresenter implements Presenter<CreateOwnerDataResponse> {
+  public present(
     succeed: boolean,
     error?: Error,
     creationId?: string,
-  ): DefaultResponse<any> {
+  ): BaseResponse<CreateOwnerDataResponse> {
     return {
       succeed: succeed,
       data: {

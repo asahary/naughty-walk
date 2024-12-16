@@ -1,4 +1,4 @@
-export interface DefaultResponse<T> {
+export interface BaseResponse<T> {
   succeed: boolean,
   data: T,
   error?: Error

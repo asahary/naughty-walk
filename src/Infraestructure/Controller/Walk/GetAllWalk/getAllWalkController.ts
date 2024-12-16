@@ -23,11 +23,11 @@ export class GetAllWalkController {
     try {
 
       const result = await this.allWalksGetter.execute(body?.filters);
-      const presented = this.presenter.execute(true, undefined, result);
+      const presented = this.presenter.present(true, undefined, result);
 
       return response.status(HttpStatus.OK).send(presented);
     }catch (e){
-      const presented = this.presenter.execute(true, undefined, e);
+      const presented = this.presenter.present(true, undefined, e);
 
       return response.status(HttpStatus.BAD_REQUEST).send(presented);
     }

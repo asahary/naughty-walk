@@ -26,11 +26,11 @@ export class CreatePetController {
 
       const createdPet = await this.petCreator.execute(body);
 
-      const presentedResponse = this.createPetResponsePresenter.execute(true, undefined, body.owner_id, createdPet.id);
+      const presentedResponse = this.createPetResponsePresenter.present(true, undefined, body.owner_id, createdPet.id);
 
       return response.status(HttpStatus.CREATED).send(presentedResponse);
     } catch (e) {
-      const presentedResponse = this.createPetResponsePresenter.execute(false, e, body?.owner_id );
+      const presentedResponse = this.createPetResponsePresenter.present(false, e, body?.owner_id );
       return response.status(HttpStatus.BAD_REQUEST).send(presentedResponse);
     }
   }

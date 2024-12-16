@@ -62,6 +62,16 @@ $ npm run migration:run CamelCaseMigrationName
 $ npm run migration:revert
 ```
 
+## Docker
+
+```bash
+#build image
+$ docker build -t naughty-walk .
+
+#run docker image alongside databases dependencies  
+$ docker-compose up -d
+```
+
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
 
 ## Resources

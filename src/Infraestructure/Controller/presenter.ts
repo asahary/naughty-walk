@@ -1,5 +1,5 @@
-import { DefaultResponse } from "../../Domain/ClientPayloads/defaultResponse";
+import { BaseResponse } from "../../Domain/ClientPayloads/baseResponse";
 
 export interface Presenter<T> {
-  execute(succeed: boolean, error?: Error, ...args: any[]): DefaultResponse<T>
+  present(succeed: boolean, error?: Error, ...args: any[]): BaseResponse<T>
 }

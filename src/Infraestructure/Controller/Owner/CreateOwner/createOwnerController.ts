@@ -31,11 +31,11 @@ export class CreateOwnerController {
 
       const createdOwner = await this.ownerCreator.execute(body);
 
-      const presentedResponse = this.createOwnerResponsePresenter.execute(true, undefined, createdOwner.id);
+      const presentedResponse = this.createOwnerResponsePresenter.present(true, undefined, createdOwner.id);
 
       return response.status(HttpStatus.CREATED).send(presentedResponse);
     } catch (e) {
-      const presentedResponse = this.createOwnerResponsePresenter.execute(false, e, undefined);
+      const presentedResponse = this.createOwnerResponsePresenter.present(false, e, undefined);
       return response.status(HttpStatus.BAD_REQUEST).send(presentedResponse);
     }
   }

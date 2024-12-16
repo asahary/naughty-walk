@@ -1,4 +1,4 @@
-export interface LocationWalkRequest {
+export interface LocationDataResponse {
   latitude: number,
   longitude: number
 }

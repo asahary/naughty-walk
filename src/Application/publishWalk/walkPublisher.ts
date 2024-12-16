@@ -1,7 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { WalkModel } from "../../Domain/DomainModel/Walk/walkModel";
 import { WalkRepository } from "../../Domain/Repository/walkRepository";
-import { CreateWalkRequest } from "../../Domain/ClientPayloads/Walk/CreateWalk/createWalkRequest";
+import { CreateWalkWalksRequest } from "../../Domain/ClientPayloads/Walk/CreateWalk/createWalkWalksRequest";
 import {
   WalkBuilderFromOwnerCreationRequest
 } from "../../Domain/Builder/Walk/walkBuilderFromCreateWalkRequest";
@@ -16,7 +16,7 @@ export class WalkPublisher {
   ) {
   }
 
-  async execute(publishWalkRequest: CreateWalkRequest): Promise<WalkModel> {
+  async execute(publishWalkRequest: CreateWalkWalksRequest): Promise<WalkModel> {
 
     try {
 

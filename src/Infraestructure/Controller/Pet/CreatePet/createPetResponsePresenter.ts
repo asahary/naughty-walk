@@ -1,20 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Presenter } from '../../presenter';
+import { CreatePetDataResponse } from "../../../../Domain/ClientPayloads/Pet/CreatePet/createPetDataResponse";
+import { BaseResponse } from "../../../../Domain/ClientPayloads/baseResponse";
 
 @Injectable()
 export class CreatePetResponsePresenter
   implements
-    Presenter<{
-      owner_id: string;
-      pet_id: string;
-    }>
+    Presenter<CreatePetDataResponse>
 {
-  public execute(
+  public present(
     succeed: boolean,
     error?: Error,
     ownerId?: string,
     creationId?: string,
-  ) {
+  ): BaseResponse<CreatePetDataResponse> {
     return {
       succeed,
       data: {

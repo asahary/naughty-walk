@@ -3,7 +3,7 @@ import { IdGenerator } from '../../DomainModel/Services/idGenerator';
 import { PetModel } from '../../DomainModel/Pet/petModel';
 import { CreatePetRequest } from '../../ClientPayloads/Pet/CreatePet/createPetRequest';
 import { Behaviour } from '../../DomainModel/Pet/behaviour';
-import { CreateWalkRequest } from '../../ClientPayloads/Walk/CreateWalk/createWalkRequest';
+import { CreateWalkWalksRequest } from '../../ClientPayloads/Walk/CreateWalk/createWalkWalksRequest';
 import { WalkModel } from '../../DomainModel/Walk/walkModel';
 import { OwnerRepository } from '../../Repository/ownerRepository';
 import { PetRepository } from '../../Repository/petRepository';
@@ -20,7 +20,7 @@ export class WalkBuilderFromOwnerCreationRequest {
     private readonly petRepository: PetRepository,
   ) {}
 
-  async execute(request: CreateWalkRequest): Promise<WalkModel> {
+  async execute(request: CreateWalkWalksRequest): Promise<WalkModel> {
     const promiseResult = await Promise.all([
       this.ownerRepository.getOwner(request.owner_id),
       this.petRepository.getPetList(request.walking_pet_id_list),
