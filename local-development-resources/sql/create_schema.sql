@@ -1,0 +1,1 @@
+CREATE SCHEMA naughty_walk_db
